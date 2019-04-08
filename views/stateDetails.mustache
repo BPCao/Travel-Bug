@@ -1,0 +1,25 @@
+<html>
+<head>
+</head>
+<body>
+<form action = '/state-details' method = 'POST'> 
+<input placeholder = 'Enter City' name = 'city'>
+<input type = 'hidden' name = 'state' value = {{state}}>
+<select name = 'locationType'>
+  <option value="Parks">Parks</option>
+  <option value="Campgrounds">Campgrounds</option>
+  <option value="Places">Places</option>
+</select>
+<button type = 'submit'>Search Or some shit</button>
+
+<ul>
+    {{#results}}
+        <li><h1>{{name}}</h1>
+        <p>{{description}}</p>
+        <p>{{weatherInfo}}</p>
+        </li>
+    {{/results}}
+</ul>
+
+</body>
+</html>
