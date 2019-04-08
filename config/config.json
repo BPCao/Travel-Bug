@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "svitatof",
+    "password": "1f40txYiK3P47Ml33O2iEdelQFQIgy8l",
+    "database": "svitatof",
+    "host": "isilo.db.elephantsql.com",
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "svitatof",
+    "password": "1f40txYiK3P47Ml33O2iEdelQFQIgy8l",
+    "database": "travel_buddy",
+    "host": "isilo.db.elephantsql.com",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "svitatof",
+    "password": "1f40txYiK3P47Ml33O2iEdelQFQIgy8l",
+    "database": "travel_buddy",
+    "host": "isilo.db.elephantsql.com",
+    "dialect": "postgres"
+  }
+}
