@@ -38,6 +38,15 @@ app.post('/register',(req,res)=>{
      res.redirect('/')
 })
 
+app.post('/login', (res, req)=>{
+
+    let memberU = req.body.memeberU
+    let memberP = req.body.memberP
+
+    if()
+
+})
+
 app.listen(3000,function(){
     console.log("Server is running...")
   })
