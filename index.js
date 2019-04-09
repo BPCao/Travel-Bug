@@ -3,9 +3,11 @@ const bodyParser = require('body-parser')
 const models = require('./models')
 const mustacheExpress = require('mustache-express')
 const bcrypt= require('bcrypt')
+const fetch = require('node-fetch')
 const saltRounds = 10;
 const app = express()
-
+let codeList = []
+let parkListRequests = []
 
 app.engine('mustache', mustacheExpress())
 
@@ -38,13 +40,47 @@ app.post('/register',(req,res)=>{
      res.redirect('/')
 })
 
-app.post('/login', (res, req)=>{
+// app.post('/login', (res, req)=>{
 
-    let memberU = req.body.memeberU
-    let memberP = req.body.memberP
+//     let memberU = req.body.memeberU
+//     let memberP = req.body.memberP
 
-    if()
+//     if()
 
+// })
+
+
+
+
+
+app.get('/favorites',(req,res) =>
+{
+    models.Park.findAll({attributes : ['parkid']})
+    .then(parkcodeList => 
+    {
+        for (let park of parkcodeList)
+        {
+            let fetchURL = "https://developer.nps.gov/api/v1/parks?parkcode=" + park.dataValues.parkid + 
+            "&api_key=YM83j0nOk32AyONYaqMkisirhWoF8XYyEEbCZ8Gk"
+            parkListRequests.push(fetch(fetchURL))
+        }
+        Promise.all(parkListRequests)
+        .then((parkListResponses) => 
+        {
+            let parksArray = parkListResponses.map((parkListResponse) => parkListResponse.json())
+            Promise.all(parksArray)
+            .then((json) => 
+            {   
+                console.log(json)
+                let nameArray = json.map((park) => 
+                {   
+                    let data = park.data[0]
+                    return {fullName: data.fullName, description: data.description, id: data.id, parkcode: data.parkCode}
+                })
+                res.render('favorites', {parkList : nameArray})
+            })
+        })   
+    })
 })
 
 app.listen(3000,function(){
