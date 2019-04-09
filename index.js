@@ -1,9 +1,12 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+
 const mustacheExpress = require('mustache-express')
 const app = express()
 const fetch = require('node-fetch')
 const models = require('./models')
+const bcrypt= require('bcrypt')
+const saltRounds = 10;
 geocodeApi = "c8bb868a5cf89ccfca4b5a8bc25cf8ca7bb7c70"
 
 app.engine('mustache', mustacheExpress())
@@ -96,6 +99,38 @@ app.post('/add-favorite', (req,res) => {
     })
 })
 
+app.get('/',(req, res)=> {
+    res.render('login')
+})
+
+app.get('/register', (req,res)=>{
+    res.render('register')
+})
+
+app.post('/register',(req,res)=>{
+  
+    let username = req.body.username
+    let password = req.body.password 
+
+    
+
+ bcrypt.hash(password, saltRounds, function(error, hash) {
+    models.User.build({
+        username: username,
+        password: hash
+    }).save()
+    }).then(console.log("SUCCESS"))
+     res.redirect('/')
+})
+
+app.post('/login', (res, req)=>{
+
+    let memberU = req.body.memeberU
+    let memberP = req.body.memberP
+
+})
+
 app.listen(3000, () => {
     console.log('running...')
 })
+
