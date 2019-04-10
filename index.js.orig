@@ -5,6 +5,8 @@ const bodyParser = require('body-parser')
 const fetch = require('node-fetch')
 const models = require('./models')
 const bcrypt= require('bcrypt')
+const saltRounds = 10;
+
 var session = require('express-session')
 let parkListRequests = []
 app.all('/login/*', authenticate)
@@ -186,16 +188,23 @@ app.post('/campground-info', (req,res) => {
     }) 
 })
 
-app.post('/add-favorite', (req,res) => {
-    
-    models.Parks.build({
+app.post('/add-favorite', (req,res) => 
+{
+    models.Parks.build(
+    {
         postid: postid,
         username: username, 
         comment: comment
     })
     .save()
+<<<<<<< HEAD
+    .then(x => 
+    {
+        res.redirect('/index/view-all')
+=======
     .then(x => {
         res.redirect('/login/homePage/favorites')
+>>>>>>> a3dfac311c686e86851b200e63400f11ffe01367
     })
 })
 
@@ -217,6 +226,56 @@ app.get('/login',(req, res)=> {
     res.render('login')
 })
 
+<<<<<<< HEAD
+// app.get('/register', (req,res)=>{
+//     res.render('register') 
+//     bcrypt.hash(password, saltRounds, function(error, hash) {
+//     models.User.create({
+//         username: username,
+//         password: hash
+//     })
+//     .then(console.log("SUCCESS"))
+//      res.redirect('/login')
+// })
+
+
+// app.post('/login', (req, res)=>{
+//     let memberU = req.body.memberU
+//     let memberP = req.body.memberP
+//     models.User.findOne(
+//     {
+//         where: 
+//         {
+//             username: memberU
+//         }
+//     })
+//     .then(function(user) 
+//     {
+//         if (user === null) 
+//         {
+//             res.render('login', {message: "Sorry invalid username and/or password"})
+//         }
+//         else 
+//         {
+//             bcrypt.compare(memberP, user.password, function(err, result) 
+//             {
+//                 if(result) 
+//                 {
+//                     if(req.session) 
+//                     {
+//                         req.session.userId = user.id 
+//                     }
+//                     res.redirect('/homePage')
+//                 }
+//                 else 
+//                 {
+//                     res.render('login', {message: "Sorry invalid password"})
+//                 }
+//             })
+//         }
+//     })
+// })
+=======
 app.get('/register', (req,res)=>{
     res.render('register') 
 })
@@ -261,6 +320,7 @@ app.post('/login', (req, res)=>{
 
 
 
+>>>>>>> a3dfac311c686e86851b200e63400f11ffe01367
 
 app.get('/login/homePage',(req, res)=>{
     res.render('homePage')
@@ -297,4 +357,5 @@ app.get('/favorites',(req,res) =>
 })
 
 app.listen(3000, () => console.log('Running server...'))
+
 
