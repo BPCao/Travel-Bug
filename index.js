@@ -6,13 +6,8 @@ const fetch = require('node-fetch')
 const models = require('./models')
 const bcrypt= require('bcrypt')
 const saltRounds = 10;
-<<<<<<< HEAD
-=======
-const app = express()
-
 var session = require('express-session')
-
-
+let parkListRequests = []
 
 //session setup
 app.use(session({
@@ -22,9 +17,6 @@ app.use(session({
 }))
 app.all('/login/*', authenticate)
 
-let codeList = []
->>>>>>> 24683af6ea5d23f11efb5ec88c292ad03f6a925b
-let parkListRequests = []
 geocodeApi = "c8bb868a5cf89ccfca4b5a8bc25cf8ca7bb7c70"
 
 app.engine('mustache', mustacheExpress())
@@ -138,30 +130,16 @@ app.get('/register', (req,res)=>{
     res.render('register') 
 })
 
-    
 
-<<<<<<< HEAD
-// bcrypt.hash(password, saltRounds, function(error, hash) 
-// {
-//     models.User.build(
-//     {
-//         username: username,
-//         password: hash
-//     })
-//     .save()
-//     .then(console.log("SUCCESS"))
-//     res.redirect('/')
-// })
-=======
- bcrypt.hash(password, saltRounds, function(error, hash) {
+bcrypt.hash(password, saltRounds, function(error, hash) {
     models.User.create({
         username: username,
         password: hash
     })
     .then(console.log("SUCCESS"))
      res.redirect('/login')
-    })
 })
+
 
 app.post('/login', (req, res)=>{
     
@@ -200,8 +178,6 @@ app.post('/login', (req, res)=>{
 
 app.get('/login/homePage',(req, res)=>{
     res.render('homePage')
-
->>>>>>> 24683af6ea5d23f11efb5ec88c292ad03f6a925b
 
 
 app.get('/favorites',(req,res) =>
