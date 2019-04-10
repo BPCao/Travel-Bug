@@ -1,17 +1,28 @@
 <html>
 <head></head>
 <body>
-    <h1>Your Favorite Parks</h1>
-        <ul style="display:flex; justify-content:space-between; list-style-type:none;">    
-            <li>Name</li><li>Category</li><li>ID</li><li>Park Code</li>
-        </ul>
-    <ul style="display:flex; justify-content:space-between; list-style-type:none;">
-    {{#parkList}}
-        <li style="display:flex; justify-content:space-between; list-style-type:none;">
-            <li>{{fullName}}</li> -- <li>{{description}}</li> -- <li>{{id}}</li> -- <li>{{parkcode}}</li>
-        </li>    
+    <h1>Your Favorite Parks and Places :)</h1>
+    <form method = 'post' action = '/search-redirect'>
+    <button type = 'submit'>Search for most places!</button>
+    </form>
+    <h2>{{message}}</h2>
+    <ul>
+{{#parkList}}
+        <li>
+        <h1>{{fullName}}{{title}}</h1>
+        <p>{{description}}</p>
+        <p>{{listingdescription}}</p>
+        {{#listingimage}}
+        <img style = 'width:400px' src = {{listingimage.url}}>
+        {{/listingimage}}
+        <form action = '/delete-favorite' method = 'POST'>
+            <input name = 'parkCode' value = '{{parkCode}}' type = 'hidden'>
+            <input name = 'fullName' value = '{{fullName}}' type = 'hidden'>
+            <input name = 'title' type = 'hidden' value = '{{title}}'>
+            <button type = 'submit' formaction = '/delete-favorite'>Delete Item</button>
+        </form> 
+        </li>
     {{/parkList}}
-    </ul>
 
 </body>
 </html>
