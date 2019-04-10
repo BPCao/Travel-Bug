@@ -13,7 +13,7 @@
     <form action="/login/homePage/logout">
     <button>Logout</button>
     </form>
-<form action = '/state-details' method = 'POST'> 
+<form action = '/homePage' method = 'POST'> 
 <input placeholder = 'Enter City' name = 'city'>
 <input placeholder = 'Enter State Code' name = 'state'>
 <select name = 'locationType'>
@@ -21,7 +21,9 @@
   <option value="Places">Places</option>
 </select>
 <button type = 'submit'>Search </button>
-
+<form action = '/favorites-redirect' method = 'POST'>
+  <button type = 'submit' formaction = '/favorites-redirect'>View Your Favorites! :)</button>
+</form>
 <h1>{{message}}</h1>
 
 <ul>
@@ -34,8 +36,10 @@
         <img style = 'width:400px' src = {{listingImage}}>
         {{/listingImage}}
         <form action = '/add-favorite' method = 'POST'>
-            <input type = 'hidden' name = 'userTEST' value = ''> 
-            <input type = 'hidden' value = >
+            <input type = 'hidden' name = 'userId' value = '123456'> 
+            <input type = 'hidden' name = 'locationType' value = '{{locationType}}'>
+            <input type = 'hidden' name = 'parkCode' value = '{{parkCode}}'>
+            <input type = 'hidden' name = 'title' value = '{{title}}'>
             <button formaction = '/add-favorite' type = 'submit'>Add selection to your favorites</button>
         </form>
         {{#parkInfo}}

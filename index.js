@@ -8,7 +8,6 @@ const bcrypt= require('bcrypt')
 const saltRounds = 10;
 
 var session = require('express-session')
-let parkListRequests = []
 
 //session setup
 app.use(session({
@@ -131,45 +130,12 @@ app.get('/login/homePage',(req, res)=>{
     res.render('homePage')
 })
 
-app.get('/login/homePage/favorites',(req,res) =>
-{
-    models.Park.findAll({attributes : ['parkid']})
-    .then((parkcodeList) => 
-    {
-        for (let park of parkcodeList)
-        {
-            let fetchURL = "https://developer.nps.gov/api/v1/parks?parkcode=" + park.dataValues.parkid + 
-            "&api_key=YM83j0nOk32AyONYaqMkisirhWoF8XYyEEbCZ8Gk"
-            parkListRequests.push(fetch(fetchURL))
-        }
-        Promise.all(parkListRequests)
-        .then((parkListResponses) => 
-        {
-            let parksArray = parkListResponses.map((parkListResponse) => parkListResponse.json())
-            Promise.all(parksArray)
-            .then((json) => 
-            {   
-                console.log(json)
-                let nameArray = json.map((park) => 
-                {   
-                    let data = park.data[0]
-                    return {fullName: data.fullName, description: data.description, id: data.id, parkcode: data.parkCode}
-                })
-                res.render('favorites', {parkList : nameArray})
-            })
-        })   
-    })
-})
 
-app.get('/state-details/', (req,res) => {
-    res.render('homePage')
-})
-
-app.post('/state-details', (req,res) => {
+app.post('/homePage', (req,res) => {
     let state = req.body.state.toUpperCase();
     let city = req.body.city
     if(state == '' || city == ''){
-        res.render('stateDetails', {message:"Please enter both a city and a state :)"})
+        res.render('homePage', {message:"Please enter both a city and a state :)"})
     }
     city = city.charAt(0).toUpperCase() + city.slice(1)
     let locationType = req.body.locationType.toLowerCase();
@@ -177,7 +143,7 @@ app.post('/state-details', (req,res) => {
 .then(response => response.json())
 .then(result => {
     if(result.error){
-        res.render('stateDetails', {message:"Hmm, your search didn\'t return any results. Try again."})
+        res.render('homePage', {message:"Hmm, your search didn\'t return any results. Try again."})
     }
     let cityCoord = {lat:result.results[0].location.lat, long:result.results[0].location.lng}
         fetch(`https://developer.nps.gov/api/v1/${locationType}?api_key=YM83j0nOk32AyONYaqMkisirhWoF8XYyEEbCZ8Gk&statecode=${state}`)
@@ -229,6 +195,11 @@ app.post('/state-details', (req,res) => {
     })
 })
 
+
+app.post('/favorites-redirect', (req,res) => {
+    res.redirect('/login/homePage/favorites')
+})
+
 app.post('/campground-info', (req,res) => {
     let parkCode = req.body.parkCode
     let parkName = req.body.parkName
@@ -248,13 +219,12 @@ app.post('/add-favorite', (req,res) => {
     let locationType = req.body.locationType
     let parkcode 
     if(locationType == 'parks'){
-        parkcode = req.body.parkcode
+        parkcode = req.body.parkCode
     }
     else if(locationType == 'places'){
-        parkcode = req.body.placeTitle
-    }
+        parkcode = req.body.title
+    } 
     let userId = req.body.userId
-
     models.Parks.build({
         parkid: parkcode,
         userid: userId,
@@ -262,9 +232,7 @@ app.post('/add-favorite', (req,res) => {
     })
     .save()
     .then(x => {
-
-        res.render('stateDetails', {message: "The " + locationType.substring(0,locationType.length - 1) + " has been added to your favorites. Go back to view your search results again :)"})
-
+        res.render('homePage', {message: "The " + locationType.substring(0,locationType.length - 1) + " has been added to your favorites. Go back to view your search results again :)"})
     })
 })
 
@@ -284,10 +252,10 @@ app.get('/login/homePage',(req, res)=>{
 
 // })
 app.post('/search-redirect', (req,res) => {
-    res.redirect('/state-details')
+    res.render('homePage')
 })
 
-app.get('/favorites',(req,res) =>
+app.get('/login/homePage/favorites',(req,res) =>
 {
     let parkListRequests = []
     models.Parks.findAll()
@@ -295,7 +263,7 @@ app.get('/favorites',(req,res) =>
     {
         for (let park of parkcodeList)
         {   
-            let rowId = park.dataValues.id
+            console.log('test')
             let parkid = park.dataValues.parkid
             let category = park.dataValues.category
             let fetchURL = ''
@@ -305,6 +273,7 @@ app.get('/favorites',(req,res) =>
             else if (category == 'places'){
                 fetchURL = `https://developer.nps.gov/api/v1/${category}?q=${parkid}&api_key=YM83j0nOk32AyONYaqMkisirhWoF8XYyEEbCZ8Gk`   
             }
+            console.log(fetchURL)
         parkListRequests.push(fetch(fetchURL))
         }
         Promise.all(parkListRequests)
@@ -343,7 +312,7 @@ app.post('/delete-favorite', (req,res) => {
             parkid: parkId
         }
     })
-    res.redirect('/favorites')
+    res.redirect('/login/homePage/favorites')
 })
 
 
