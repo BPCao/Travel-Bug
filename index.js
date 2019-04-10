@@ -6,6 +6,7 @@ const fetch = require('node-fetch')
 const models = require('./models')
 const bcrypt= require('bcrypt')
 const saltRounds = 10;
+
 var session = require('express-session')
 let parkListRequests = []
 
@@ -140,10 +141,17 @@ app.get('/state-details/', (req,res) => {
 app.post('/state-details', (req,res) => {
     let state = req.body.state.toUpperCase();
     let city = req.body.city
+    if(state == '' || city == ''){
+        res.render('stateDetails', {message:"Please enter both a city and a state :)"})
+    }
+    city = city.charAt(0).toUpperCase() + city.slice(1)
     let locationType = req.body.locationType.toLowerCase();
     fetch(`https://api.geocod.io/v1.3/geocode?city=${city}&state=${state}&api_key=${geocodeApi}`)
 .then(response => response.json())
 .then(result => {
+    if(result.error){
+        res.render('stateDetails', {message:"Hmm, your search didn\'t return any results. Try again."})
+    }
     let cityCoord = {lat:result.results[0].location.lat, long:result.results[0].location.lng}
         fetch(`https://developer.nps.gov/api/v1/${locationType}?api_key=YM83j0nOk32AyONYaqMkisirhWoF8XYyEEbCZ8Gk&statecode=${state}`)
         .then(response => response.json())
@@ -158,27 +166,33 @@ app.post('/state-details', (req,res) => {
                 }
                 let imageUrl = ''
                 let parkCode = ''
-                if(locationType == "places"){ //only return imageurl if you're searching up a place, not a park or campground
+                if(locationType == "places"){ 
                     imageUrl = x.listingimage.url
+                    return { 
+                        description:x.description,
+                        weatherInfo:x.weatherInfo,
+                        distance:distance,
+                        title:x.title,
+                        listingdescription:x.listingdescription,
+                        listingImage:imageUrl,
+                        locationType:locationType
+                    }
                 }
-                if(locationType == 'parks'){//we won't display this, but it'll help the mustache determine if it's a park or not
+                if(locationType == 'parks'){
                     parkCode = x.parkCode
-                }
-                return { //returning all the necessary api elements...places and parks have different keys
-                    //so for now I'm just returning all the keys from both. Ex. parks has name, but not title, while 
-                    //places has title but not name.
-                    name:x.name,
-                    description:x.description,
-                    weatherInfo:x.weatherInfo,
-                    distance:distance,
-                    title:x.title,
-                    listingdescription:x.listingdescription,
-                    listingImage:imageUrl,
-                    parkInfo:{
+                    return { 
+                        name:x.name,
+                        description:x.description,
+                        weatherInfo:x.weatherInfo,
+                        distance:distance,
                         parkCode:parkCode,
-                        parkName:x.name                        
-                    } 
-                    
+                        listingdescription:x.listingdescription,
+                        locationType:locationType,
+                        parkInfo:{
+                            parkCode:parkCode,
+                            parkName:x.name                        
+                        } 
+                    }
                 }
             })
             resultsDisplay.sort((a,b) => (a.distance > b.distance) ? 1 : ((b.distance > a.distance) ? -1 : 0));
@@ -204,15 +218,26 @@ app.post('/campground-info', (req,res) => {
 })
 
 app.post('/add-favorite', (req,res) => {
-    
+    let locationType = req.body.locationType
+    let parkcode 
+    if(locationType == 'parks'){
+        parkcode = req.body.parkcode
+    }
+    else if(locationType == 'places'){
+        parkcode = req.body.placeTitle
+    }
+    let userId = req.body.userId
+
     models.Parks.build({
-        postid: postid,
-        username: username, 
-        comment: comment
+        parkid: parkcode,
+        userid: userId,
+        category: locationType
     })
     .save()
     .then(x => {
-        res.redirect('/login/homePage/favorites')
+
+        res.render('stateDetails', {message: "The " + locationType.substring(0,locationType.length - 1) + " has been added to your favorites. Go back to view your search results again :)"})
+
     })
 })
 
@@ -222,16 +247,38 @@ app.get('/login/homePage',(req, res)=>{
     res.render('homePage')
 })
 
+
+// app.post('/login', (res, req)=>{
+
+//     let memberU = req.body.memeberU
+//     let memberP = req.body.memberP
+
+//     if()
+
+// })
+app.post('/search-redirect', (req,res) => {
+    res.redirect('/state-details')
+})
+
 app.get('/favorites',(req,res) =>
 {
-    models.Park.findAll({attributes : ['parkid']})
-    .then((parkcodeList) => 
+    let parkListRequests = []
+    models.Parks.findAll()
+    .then(parkcodeList => 
     {
         for (let park of parkcodeList)
-        {
-            let fetchURL = 
-            `https://developer.nps.gov/api/v1/parks?parkcode=${park.dataValues.parkid}&api_key=YM83j0nOk32AyONYaqMkisirhWoF8XYyEEbCZ8Gk`
-            parkListRequests.push(fetch(fetchURL))
+        {   
+            let rowId = park.dataValues.id
+            let parkid = park.dataValues.parkid
+            let category = park.dataValues.category
+            let fetchURL = ''
+            if(category == 'parks'){
+                fetchURL = `https://developer.nps.gov/api/v1/${category}?parkcode=${parkid}&api_key=YM83j0nOk32AyONYaqMkisirhWoF8XYyEEbCZ8Gk`
+            }
+            else if (category == 'places'){
+                fetchURL = `https://developer.nps.gov/api/v1/${category}?q=${parkid}&api_key=YM83j0nOk32AyONYaqMkisirhWoF8XYyEEbCZ8Gk`   
+            }
+        parkListRequests.push(fetch(fetchURL))
         }
         Promise.all(parkListRequests)
         .then((parkListResponses) => 
@@ -240,11 +287,16 @@ app.get('/favorites',(req,res) =>
             Promise.all(parksArray)
             .then((json) => 
             {   
-                console.log(json)
                 let nameArray = json.map(park => 
                 {   
                     let data = park.data[0]
-                    return {fullName: data.fullName, description: data.description, id: data.id, parkcode: data.parkCode}
+                    return {
+                        fullName: data.fullName, 
+                        description: data.description, 
+                        parkCode: data.parkCode,
+                        title:data.title,
+                        listingimage:data.listingimage
+                    }
                 })
                 res.render('favorites', {parkList : nameArray})
             })
@@ -252,6 +304,24 @@ app.get('/favorites',(req,res) =>
     })
 })
 
-app.listen(3000, () => console.log('Running server...'))
+app.post('/delete-favorite', (req,res) => {
+    if(req.body.parkCode != ''){
+        var parkId = req.body.parkCode
+    }
+    else if(req.body.title != ''){
+        var parkId = req.body.title
+    }
+    models.Parks.destroy({
+        where: {
+            parkid: parkId
+        }
+    })
+    res.redirect('/favorites')
+})
+
+
+app.listen(3000, () => {
+    console.log('running...')
+})
 
 
