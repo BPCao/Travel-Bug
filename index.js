@@ -48,16 +48,27 @@ app.post('/register',(req,res)=>{
     let username = req.body.username
     let password = req.body.password 
 
+    models.User.findOne({
+        where:{
+            username: username
+        }
+    }).then(function(user){
+        if(user.username){
+            res.render('register', {message: "That username is already taken, please try again."})
+        }else{
+            bcrypt.hash(password, saltRounds, function(error, hash) {
+                models.User.create({
+                    username: username,
+                    password: hash
+                })
+                .then(console.log("SUCCESS"))
+                 res.redirect('/login')
+            })
+        }
+    })
     
 
- bcrypt.hash(password, saltRounds, function(error, hash) {
-    models.User.create({
-        username: username,
-        password: hash
-    })
-    .then(console.log("SUCCESS"))
-     res.redirect('/login')
-    })
+ 
 })
 app.get('/login',(req, res)=> {
     res.render('login')
@@ -98,6 +109,22 @@ app.post('/login', (req, res)=>{
 
 })
 
+app.get('/login/homePage/logout', function(req,res,next){
+    
+    if(req.session){
+        //delete session object
+        req.session.destroy(function(err){
+            if(err){
+                return next(err)
+            }else{
+                return res.redirect('/login')
+            }
+        })
+
+    }
+    
+})
+
 app.get('/login/homePage',(req, res)=>{
     res.render('homePage')
 })
@@ -134,7 +161,7 @@ app.get('/login/homePage/favorites',(req,res) =>
 
 
 app.get('/state-details/', (req,res) => {
-    res.render('stateDetails')
+    res.render('homePage')
 })
 
 app.post('/state-details', (req,res) => {
@@ -182,7 +209,7 @@ app.post('/state-details', (req,res) => {
                 }
             })
             resultsDisplay.sort((a,b) => (a.distance > b.distance) ? 1 : ((b.distance > a.distance) ? -1 : 0));
-            res.render('stateDetails', {results:resultsDisplay, state:state, message:`Here are the \
+            res.render('homePage', {results:resultsDisplay, state:state, message:`Here are the \
             ${locationType} ordered by distance from ${city}, ${state}. Get that travel bug! :)`})
         })  
     })
