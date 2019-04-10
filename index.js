@@ -1,16 +1,13 @@
 const express = require('express')
-const bodyParser = require('body-parser')
-
-const mustacheExpress = require('mustache-express')
 const app = express()
+const mustacheExpress = require('mustache-express')
+const bodyParser = require('body-parser')
 const fetch = require('node-fetch')
 const models = require('./models')
 const bcrypt= require('bcrypt')
 const saltRounds = 10;
-
 var session = require('express-session')
-
-
+let parkListRequests = []
 
 //session setup
 app.use(session({
@@ -18,10 +15,22 @@ app.use(session({
     resave:false,
     saveUninitialized: true
 }))
+
+function authenticate(req,res,next){
+
+    if(req.session){
+        if(req.session.userId) {
+            // go to the next/original request
+            next()
+          } else {
+            res.redirect('/login')
+          }
+        } else {
+            res.redirect('/login')
+        }
+}
 app.all('/login/*', authenticate)
 
-let codeList = []
-let parkListRequests = []
 geocodeApi = "c8bb868a5cf89ccfca4b5a8bc25cf8ca7bb7c70"
 
 app.engine('mustache', mustacheExpress())
@@ -207,25 +216,41 @@ app.post('/add-favorite', (req,res) => {
     })
 })
 
-function authenticate(req,res,next){
-
-    if(req.session){
-        if(req.session.userId) {
-            // go to the next/original request
-            next()
-          } else {
-            res.redirect('/login')
-          }
-        } else {
-            res.redirect('/login')
-        }
-    }
 
 
-
-
-
-
-app.listen(3000, () => {
-    console.log('running...')
+app.get('/login/homePage',(req, res)=>{
+    res.render('homePage')
 })
+
+app.get('/favorites',(req,res) =>
+{
+    models.Park.findAll({attributes : ['parkid']})
+    .then((parkcodeList) => 
+    {
+        for (let park of parkcodeList)
+        {
+            let fetchURL = 
+            `https://developer.nps.gov/api/v1/parks?parkcode=${park.dataValues.parkid}&api_key=YM83j0nOk32AyONYaqMkisirhWoF8XYyEEbCZ8Gk`
+            parkListRequests.push(fetch(fetchURL))
+        }
+        Promise.all(parkListRequests)
+        .then((parkListResponses) => 
+        {
+            let parksArray = parkListResponses.map(parkListResponse => parkListResponse.json())
+            Promise.all(parksArray)
+            .then((json) => 
+            {   
+                console.log(json)
+                let nameArray = json.map(park => 
+                {   
+                    let data = park.data[0]
+                    return {fullName: data.fullName, description: data.description, id: data.id, parkcode: data.parkCode}
+                })
+                res.render('favorites', {parkList : nameArray})
+            })
+        })   
+    })
+})
+
+app.listen(3000, () => console.log('Running server...'))
+
