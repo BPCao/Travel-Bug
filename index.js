@@ -6,9 +6,7 @@ const app = express()
 const fetch = require('node-fetch')
 const models = require('./models')
 const bcrypt= require('bcrypt')
-const fetch = require('node-fetch')
 const saltRounds = 10;
-const app = express()
 
 var session = require('express-session')
 
@@ -32,10 +30,103 @@ app.set('view engine', 'mustache')
 app.use(bodyParser.urlencoded({extended:false}))
 
 
+app.get('/register', (req,res)=>{
+    res.render('register') 
+})
+
+app.post('/register',(req,res)=>{
+  
+    let username = req.body.username
+    let password = req.body.password 
+
+    
+
+ bcrypt.hash(password, saltRounds, function(error, hash) {
+    models.User.create({
+        username: username,
+        password: hash
+    })
+    .then(console.log("SUCCESS"))
+     res.redirect('/login')
+    })
+})
+app.get('/login',(req, res)=> {
+    res.render('login')
+})
+
+app.post('/login', (req, res)=>{
+    
+    let memberU = req.body.memberU
+    let memberP = req.body.memberP
+
+    models.User.findOne({
+        where: {
+            username: memberU
+        }
+    })
+    .then(function(user) {
+        if (user === null) {
+            res.render('login', {message: "Sorry invalid username and/or password"})
+        }
+
+        else {
+            bcrypt.compare(memberP, user.password, function(err, result) {
+                if(result) {
+                    if(req.session) {
+                        req.session.userId = user.id 
+                    }
+
+                    res.redirect('/login/homePage')
+                }
+
+                else {
+                    res.render('login', {message: "Sorry invalid password"})
+                }
+            })
+        }
+    })
+
+
+})
+
+app.get('/login/homePage',(req, res)=>{
+    res.render('homePage')
+})
+
+app.get('/login/homePage/favorites',(req,res) =>
+{
+    models.Park.findAll({attributes : ['parkid']})
+    .then((parkcodeList) => 
+    {
+        for (let park of parkcodeList)
+        {
+            let fetchURL = "https://developer.nps.gov/api/v1/parks?parkcode=" + park.dataValues.parkid + 
+            "&api_key=YM83j0nOk32AyONYaqMkisirhWoF8XYyEEbCZ8Gk"
+            parkListRequests.push(fetch(fetchURL))
+        }
+        Promise.all(parkListRequests)
+        .then((parkListResponses) => 
+        {
+            let parksArray = parkListResponses.map((parkListResponse) => parkListResponse.json())
+            Promise.all(parksArray)
+            .then((json) => 
+            {   
+                console.log(json)
+                let nameArray = json.map((park) => 
+                {   
+                    let data = park.data[0]
+                    return {fullName: data.fullName, description: data.description, id: data.id, parkcode: data.parkCode}
+                })
+                res.render('favorites', {parkList : nameArray})
+            })
+        })   
+    })
+})
+
+
 app.get('/state-details/', (req,res) => {
     res.render('stateDetails')
 })
-
 
 app.post('/state-details', (req,res) => {
     let state = req.body.state.toUpperCase();
@@ -112,7 +203,7 @@ app.post('/add-favorite', (req,res) => {
     })
     .save()
     .then(x => {
-        res.redirect('/index/view-all')
+        res.redirect('/login/homePage/favorites')
     })
 })
 
@@ -130,105 +221,11 @@ function authenticate(req,res,next){
         }
     }
 
-app.get('/login',(req, res)=> {
-    res.render('login')
-})
-
-app.get('/register', (req,res)=>{
-    res.render('register') 
-})
-
-app.post('/register',(req,res)=>{
-  
-    let username = req.body.username
-    let password = req.body.password 
-
-    
-
- bcrypt.hash(password, saltRounds, function(error, hash) {
-    models.User.create({
-        username: username,
-        password: hash
-    })
-    .then(console.log("SUCCESS"))
-     res.redirect('/login')
-    })
-})
-
-app.post('/login', (req, res)=>{
-    
-    let memberU = req.body.memberU
-    let memberP = req.body.memberP
-
-    models.User.findOne({
-        where: {
-            username: memberU
-        }
-    })
-    .then(function(user) {
-        if (user === null) {
-            res.render('login', {message: "Sorry invalid username and/or password"})
-        }
-
-        else {
-            bcrypt.compare(memberP, user.password, function(err, result) {
-                if(result) {
-                    if(req.session) {
-                        req.session.userId = user.id 
-                    }
-
-                    res.redirect('/homePage')
-                }
-
-                else {
-                    res.render('login', {message: "Sorry invalid password"})
-                }
-            })
-        }
-    })
-
-
-})
-
-app.get('/login/homePage',(req, res)=>{
-    res.render('homePage')
 
 
 
 
-
-
-app.get('/favorites',(req,res) =>
-{
-    models.Park.findAll({attributes : ['parkid']})
-    .then(parkcodeList => 
-    {
-        for (let park of parkcodeList)
-        {
-            let fetchURL = "https://developer.nps.gov/api/v1/parks?parkcode=" + park.dataValues.parkid + 
-            "&api_key=YM83j0nOk32AyONYaqMkisirhWoF8XYyEEbCZ8Gk"
-            parkListRequests.push(fetch(fetchURL))
-        }
-        Promise.all(parkListRequests)
-        .then((parkListResponses) => 
-        {
-            let parksArray = parkListResponses.map((parkListResponse) => parkListResponse.json())
-            Promise.all(parksArray)
-            .then((json) => 
-            {   
-                console.log(json)
-                let nameArray = json.map((park) => 
-                {   
-                    let data = park.data[0]
-                    return {fullName: data.fullName, description: data.description, id: data.id, parkcode: data.parkCode}
-                })
-                res.render('favorites', {parkList : nameArray})
-            })
-        })   
-    })
-})
 
 app.listen(3000, () => {
     console.log('running...')
 })
-
