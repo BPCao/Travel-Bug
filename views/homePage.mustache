@@ -10,9 +10,44 @@
 
   </head>
   <body>
-    <h1>This is the homepage!</h1>
-    <button >Logout</button>
+    <form action="/login/homePage/logout">
+    <button>Logout</button>
+    </form>
+<form action = '/state-details' method = 'POST'> 
+<input placeholder = 'Enter City' name = 'city'>
+<input placeholder = 'Enter State Code' name = 'state'>
+<select name = 'locationType'>
+  <option value="Parks">Parks</option>
+  <option value="Places">Places</option>
+</select>
+<button type = 'submit'>Search </button>
 
+<h1>{{message}}</h1>
+
+<ul>
+    {{#results}}
+        <li><h1>{{name}}{{title}}</h1>
+        <p>{{description}}</p>
+        <p>{{weatherInfo}}</p>
+        <p>{{listingdescription}}</p>
+        {{#listingImage}}
+        <img style = 'width:400px' src = {{listingImage}}>
+        {{/listingImage}}
+        <form action = '/add-favorite' method = 'POST'>
+            <input type = 'hidden' name = 'userTEST' value = ''> 
+            <input type = 'hidden' value = >
+            <button formaction = '/add-favorite' type = 'submit'>Add selection to your favorites</button>
+        </form>
+        {{#parkInfo}}
+        <form action = '/campground-info' method = 'POST'>
+            <input type = 'hidden' name = 'parkCode' value = '{{parkCode}}'>
+            <input type = 'hidden' name = 'parkName' value = '{{parkName}}'>
+            <button formaction = '/campground-info' type = 'submit'>Click here to view available campgrounds!</button>
+        </form>
+        {{/parkInfo}}
+        </li>
+    {{/results}}
+</ul>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
