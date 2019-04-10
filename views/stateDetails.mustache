@@ -10,7 +10,10 @@
   <option value="Places">Places</option>
 </select>
 <button type = 'submit'>Search Or some shit</button>
-
+</form>
+<form method = 'GET' action = '/favorites'>
+<button type = 'submit' formaction = '/favorites'>View Your Favorites</button>
+</form>
 <h1>{{message}}</h1>
 
 <ul>
@@ -23,8 +26,10 @@
         <img style = 'width:400px' src = {{listingImage}}>
         {{/listingImage}}
         <form action = '/add-favorite' method = 'POST'>
-            <input type = 'hidden' name = 'userTEST' value = ''> 
-            <input type = 'hidden' value = >
+            <input type = 'hidden' name = 'userId' value = '123456'> 
+            <input type = 'hidden' name = 'parkcode' value = '{{parkCode}}'>
+            <input type = 'hidden' name = 'locationType' value = '{{locationType}}'>
+            <input type = 'hidden' name = 'placeTitle' value = '{{title}}'>
             <button formaction = '/add-favorite' type = 'submit'>Add selection to your favorites</button>
         </form>
         {{#parkInfo}}
