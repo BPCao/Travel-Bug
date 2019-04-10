@@ -1,0 +1,17 @@
+<html>
+<head></head>
+<body>
+    <h1>Your Favorite Parks</h1>
+        <ul style="display:flex; justify-content:space-between; list-style-type:none;">    
+            <li>Name</li><li>Category</li><li>ID</li><li>Park Code</li>
+        </ul>
+    <ul style="display:flex; justify-content:space-between; list-style-type:none;">
+    {{#parkList}}
+        <li style="display:flex; justify-content:space-between; list-style-type:none;">
+            <li>{{fullName}}</li> -- <li>{{description}}</li> -- <li>{{id}}</li> -- <li>{{parkcode}}</li>
+        </li>    
+    {{/parkList}}
+    </ul>
+
+</body>
+</html>
