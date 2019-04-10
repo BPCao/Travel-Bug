@@ -6,7 +6,6 @@ const fetch = require('node-fetch')
 const models = require('./models')
 const bcrypt= require('bcrypt')
 const saltRounds = 10;
-
 var session = require('express-session')
 let parkListRequests = []
 
@@ -16,6 +15,20 @@ app.use(session({
     resave:false,
     saveUninitialized: true
 }))
+
+function authenticate(req,res,next){
+
+    if(req.session){
+        if(req.session.userId) {
+            // go to the next/original request
+            next()
+          } else {
+            res.redirect('/login')
+          }
+        } else {
+            res.redirect('/login')
+        }
+}
 app.all('/login/*', authenticate)
 
 geocodeApi = "c8bb868a5cf89ccfca4b5a8bc25cf8ca7bb7c70"
@@ -203,77 +216,16 @@ app.post('/add-favorite', (req,res) => {
     })
 })
 
-function authenticate(req,res,next){
-
-    if(req.session){
-        if(req.session.userId) {
-            // go to the next/original request
-            next()
-          } else {
-            res.redirect('/login')
-          }
-        } else {
-            res.redirect('/login')
-        }
-    }
-
-app.get('/login',(req, res)=> {
-    res.render('login')
-})
-
-app.get('/register', (req,res)=>{
-    res.render('register') 
-})
-
-
-bcrypt.hash(password, saltRounds, function(error, hash) {
-    models.User.create({
-        username: username,
-        password: hash
-    })
-    .then(console.log("SUCCESS"))
-     res.redirect('/login')
-})
-
-
-app.post('/login', (req, res)=>{
-    
-    let memberU = req.body.memberU
-    let memberP = req.body.memberP
-
-    models.User.findOne({
-        where: {
-            username: memberU
-        }
-    })
-    .then(function(user) {
-        if (user === null) {
-            res.render('login', {message: "Sorry invalid username and/or password"})
-        }
-
-        else {
-            bcrypt.compare(memberP, user.password, function(err, result) {
-                if(result) {
-                    if(req.session) {
-                        req.session.userId = user.id 
-                    }
-
-                    res.redirect('/homePage')
-                }
-
-
-
-
 
 
 app.get('/login/homePage',(req, res)=>{
     res.render('homePage')
-
+})
 
 app.get('/favorites',(req,res) =>
 {
     models.Park.findAll({attributes : ['parkid']})
-    .then(parkcodeList => 
+    .then((parkcodeList) => 
     {
         for (let park of parkcodeList)
         {
