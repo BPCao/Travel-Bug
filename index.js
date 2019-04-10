@@ -6,6 +6,24 @@ const fetch = require('node-fetch')
 const models = require('./models')
 const bcrypt= require('bcrypt')
 const saltRounds = 10;
+<<<<<<< HEAD
+=======
+const app = express()
+
+var session = require('express-session')
+
+
+
+//session setup
+app.use(session({
+    secret:'travelBug',
+    resave:false,
+    saveUninitialized: true
+}))
+app.all('/login/*', authenticate)
+
+let codeList = []
+>>>>>>> 24683af6ea5d23f11efb5ec88c292ad03f6a925b
 let parkListRequests = []
 geocodeApi = "c8bb868a5cf89ccfca4b5a8bc25cf8ca7bb7c70"
 
@@ -98,16 +116,31 @@ app.post('/add-favorite', (req,res) => {
     })
 })
 
-app.get('/',(req, res)=> {
+function authenticate(req,res,next){
+
+    if(req.session){
+        if(req.session.userId) {
+            // go to the next/original request
+            next()
+          } else {
+            res.redirect('/login')
+          }
+        } else {
+            res.redirect('/login')
+        }
+    }
+
+app.get('/login',(req, res)=> {
     res.render('login')
 })
 
 app.get('/register', (req,res)=>{
-    res.render('register')
+    res.render('register') 
 })
 
     
 
+<<<<<<< HEAD
 // bcrypt.hash(password, saltRounds, function(error, hash) 
 // {
 //     models.User.build(
@@ -119,6 +152,56 @@ app.get('/register', (req,res)=>{
 //     .then(console.log("SUCCESS"))
 //     res.redirect('/')
 // })
+=======
+ bcrypt.hash(password, saltRounds, function(error, hash) {
+    models.User.create({
+        username: username,
+        password: hash
+    })
+    .then(console.log("SUCCESS"))
+     res.redirect('/login')
+    })
+})
+
+app.post('/login', (req, res)=>{
+    
+    let memberU = req.body.memberU
+    let memberP = req.body.memberP
+
+    models.User.findOne({
+        where: {
+            username: memberU
+        }
+    })
+    .then(function(user) {
+        if (user === null) {
+            res.render('login', {message: "Sorry invalid username and/or password"})
+        }
+
+        else {
+            bcrypt.compare(memberP, user.password, function(err, result) {
+                if(result) {
+                    if(req.session) {
+                        req.session.userId = user.id 
+                    }
+
+                    res.redirect('/homePage')
+                }
+
+                else {
+                    res.render('login', {message: "Sorry invalid password"})
+                }
+            })
+        }
+    })
+
+
+})
+
+app.get('/login/homePage',(req, res)=>{
+    res.render('homePage')
+
+>>>>>>> 24683af6ea5d23f11efb5ec88c292ad03f6a925b
 
 
 app.get('/favorites',(req,res) =>
