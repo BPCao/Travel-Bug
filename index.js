@@ -1,11 +1,37 @@
 const express = require('express')
-const bodyParser = require('body-parser')
-const mustacheExpress = require('mustache-express')
 const app = express()
+const mustacheExpress = require('mustache-express')
+const bodyParser = require('body-parser')
 const fetch = require('node-fetch')
 const models = require('./models')
 const bcrypt= require('bcrypt')
 const saltRounds = 10;
+
+var session = require('express-session')
+let parkListRequests = []
+
+//session setup
+app.use(session({
+    secret:'travelBug',
+    resave:false,
+    saveUninitialized: true
+}))
+
+function authenticate(req,res,next){
+
+    if(req.session){
+        if(req.session.userId) {
+            // go to the next/original request
+            next()
+          } else {
+            res.redirect('/login')
+          }
+        } else {
+            res.redirect('/login')
+        }
+}
+app.all('/login/*', authenticate)
+
 geocodeApi = "c8bb868a5cf89ccfca4b5a8bc25cf8ca7bb7c70"
 
 app.engine('mustache', mustacheExpress())
@@ -14,10 +40,103 @@ app.set('view engine', 'mustache')
 app.use(bodyParser.urlencoded({extended:false}))
 
 
+
+app.get('/register', (req,res)=>{
+    res.render('register') 
+})
+
+app.post('/register',(req,res)=>{
+  
+    let username = req.body.username
+    let password = req.body.password 
+
+    
+
+ bcrypt.hash(password, saltRounds, function(error, hash) {
+    models.User.create({
+        username: username,
+        password: hash
+    })
+    .then(console.log("SUCCESS"))
+     res.redirect('/login')
+    })
+})
+app.get('/login',(req, res)=> {
+    res.render('login')
+})
+
+app.post('/login', (req, res)=>{
+    
+    let memberU = req.body.memberU
+    let memberP = req.body.memberP
+
+    models.User.findOne({
+        where: {
+            username: memberU
+        }
+    })
+    .then(function(user) {
+        if (user === null) {
+            res.render('login', {message: "Sorry invalid username and/or password"})
+        }
+
+        else {
+            bcrypt.compare(memberP, user.password, function(err, result) {
+                if(result) {
+                    if(req.session) {
+                        req.session.userId = user.id 
+                    }
+
+                    res.redirect('/login/homePage')
+                }
+
+                else {
+                    res.render('login', {message: "Sorry invalid password"})
+                }
+            })
+        }
+    })
+
+
+})
+
+app.get('/login/homePage',(req, res)=>{
+    res.render('homePage')
+})
+
+app.get('/login/homePage/favorites',(req,res) =>
+{
+    models.Park.findAll({attributes : ['parkid']})
+    .then((parkcodeList) => 
+    {
+        for (let park of parkcodeList)
+        {
+            let fetchURL = "https://developer.nps.gov/api/v1/parks?parkcode=" + park.dataValues.parkid + 
+            "&api_key=YM83j0nOk32AyONYaqMkisirhWoF8XYyEEbCZ8Gk"
+            parkListRequests.push(fetch(fetchURL))
+        }
+        Promise.all(parkListRequests)
+        .then((parkListResponses) => 
+        {
+            let parksArray = parkListResponses.map((parkListResponse) => parkListResponse.json())
+            Promise.all(parksArray)
+            .then((json) => 
+            {   
+                console.log(json)
+                let nameArray = json.map((park) => 
+                {   
+                    let data = park.data[0]
+                    return {fullName: data.fullName, description: data.description, id: data.id, parkcode: data.parkCode}
+                })
+                res.render('favorites', {parkList : nameArray})
+            })
+        })   
+    })
+})
+
 app.get('/state-details/', (req,res) => {
     res.render('stateDetails')
 })
-
 
 app.post('/state-details', (req,res) => {
     let state = req.body.state.toUpperCase();
@@ -116,33 +235,18 @@ app.post('/add-favorite', (req,res) => {
     })
     .save()
     .then(x => {
+
         res.render('stateDetails', {message: "The " + locationType.substring(0,locationType.length - 1) + " has been added to your favorites. Go back to view your search results again :)"})
+
     })
 })
 
-app.get('/',(req, res)=> {
-    res.render('login')
+
+
+app.get('/login/homePage',(req, res)=>{
+    res.render('homePage')
 })
 
-app.get('/register', (req,res)=>{
-    res.render('register')
-})
-
-app.post('/register',(req,res)=>{
-  
-    let username = req.body.username
-    let password = req.body.password 
-
-    
-
- bcrypt.hash(password, saltRounds, function(error, hash) {
-    models.User.build({
-        username: username,
-        password: hash
-    }).save()
-    }).then(console.log("SUCCESS"))
-     res.redirect('/')
-})
 
 // app.post('/login', (res, req)=>{
 
@@ -179,11 +283,11 @@ app.get('/favorites',(req,res) =>
         Promise.all(parkListRequests)
         .then((parkListResponses) => 
         {
-            let parksArray = parkListResponses.map((parkListResponse) => parkListResponse.json())
+            let parksArray = parkListResponses.map(parkListResponse => parkListResponse.json())
             Promise.all(parksArray)
             .then((json) => 
             {   
-                let nameArray = json.map((park) => 
+                let nameArray = json.map(park => 
                 {   
                     let data = park.data[0]
                     return {
@@ -219,4 +323,5 @@ app.post('/delete-favorite', (req,res) => {
 app.listen(3000, () => {
     console.log('running...')
 })
+
 
