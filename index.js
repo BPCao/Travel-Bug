@@ -39,6 +39,7 @@ app.set('view engine', 'mustache')
 app.use(bodyParser.urlencoded({extended:false}))
 
 
+
 app.get('/register', (req,res)=>{
     res.render('register') 
 })
@@ -131,7 +132,6 @@ app.get('/login/homePage/favorites',(req,res) =>
         })   
     })
 })
-
 
 app.get('/state-details/', (req,res) => {
     res.render('stateDetails')
@@ -253,4 +253,5 @@ app.get('/favorites',(req,res) =>
 })
 
 app.listen(3000, () => console.log('Running server...'))
+
 
