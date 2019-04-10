@@ -8,6 +8,7 @@ const bcrypt= require('bcrypt')
 const saltRounds = 10;
 var session = require('express-session')
 let parkListRequests = []
+const PORT = process.env.PORT || 8080
 
 //session setup
 app.use(session({
@@ -48,7 +49,6 @@ app.post('/register',(req,res)=>{
   
     let username = req.body.username
     let password = req.body.password 
-
     
 
  bcrypt.hash(password, saltRounds, function(error, hash) {
@@ -95,8 +95,6 @@ app.post('/login', (req, res)=>{
             })
         }
     })
-
-
 })
 
 app.get('/login/homePage',(req, res)=>{
@@ -216,8 +214,6 @@ app.post('/add-favorite', (req,res) => {
     })
 })
 
-
-
 app.get('/login/homePage',(req, res)=>{
     res.render('homePage')
 })
@@ -252,6 +248,4 @@ app.get('/favorites',(req,res) =>
     })
 })
 
-app.listen(3000, () => console.log('Running server...'))
-
-
+app.listen(PORT, () => console.log('Running server...'))
