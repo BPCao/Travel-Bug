@@ -1,14 +1,11 @@
 const express = require('express')
-const bodyParser = require('body-parser')
-
-const mustacheExpress = require('mustache-express')
 const app = express()
+const mustacheExpress = require('mustache-express')
+const bodyParser = require('body-parser')
 const fetch = require('node-fetch')
 const models = require('./models')
 const bcrypt= require('bcrypt')
-const fetch = require('node-fetch')
 const saltRounds = 10;
-let codeList = []
 let parkListRequests = []
 geocodeApi = "c8bb868a5cf89ccfca4b5a8bc25cf8ca7bb7c70"
 
@@ -16,7 +13,6 @@ app.engine('mustache', mustacheExpress())
 app.set('views', './views')
 app.set('view engine', 'mustache')
 app.use(bodyParser.urlencoded({extended:false}))
-
 
 app.get('/state-details/', (req,res) => {
     res.render('stateDetails')
@@ -110,33 +106,19 @@ app.get('/register', (req,res)=>{
     res.render('register')
 })
 
-app.post('/register',(req,res)=>{
-  
-    let username = req.body.username
-    let password = req.body.password 
-
     
 
- bcrypt.hash(password, saltRounds, function(error, hash) {
-    models.User.build({
-        username: username,
-        password: hash
-    }).save()
-    }).then(console.log("SUCCESS"))
-     res.redirect('/')
-})
-
-// app.post('/login', (res, req)=>{
-
-//     let memberU = req.body.memeberU
-//     let memberP = req.body.memberP
-
-//     if()
-
+// bcrypt.hash(password, saltRounds, function(error, hash) 
+// {
+//     models.User.build(
+//     {
+//         username: username,
+//         password: hash
+//     })
+//     .save()
+//     .then(console.log("SUCCESS"))
+//     res.redirect('/')
 // })
-
-
-
 
 
 app.get('/favorites',(req,res) =>
@@ -146,19 +128,19 @@ app.get('/favorites',(req,res) =>
     {
         for (let park of parkcodeList)
         {
-            let fetchURL = "https://developer.nps.gov/api/v1/parks?parkcode=" + park.dataValues.parkid + 
-            "&api_key=YM83j0nOk32AyONYaqMkisirhWoF8XYyEEbCZ8Gk"
+            let fetchURL = 
+            `https://developer.nps.gov/api/v1/parks?parkcode=${park.dataValues.parkid}&api_key=YM83j0nOk32AyONYaqMkisirhWoF8XYyEEbCZ8Gk`
             parkListRequests.push(fetch(fetchURL))
         }
         Promise.all(parkListRequests)
         .then((parkListResponses) => 
         {
-            let parksArray = parkListResponses.map((parkListResponse) => parkListResponse.json())
+            let parksArray = parkListResponses.map(parkListResponse => parkListResponse.json())
             Promise.all(parksArray)
             .then((json) => 
             {   
                 console.log(json)
-                let nameArray = json.map((park) => 
+                let nameArray = json.map(park => 
                 {   
                     let data = park.data[0]
                     return {fullName: data.fullName, description: data.description, id: data.id, parkcode: data.parkCode}
@@ -169,7 +151,5 @@ app.get('/favorites',(req,res) =>
     })
 })
 
-app.listen(3000, () => {
-    console.log('running...')
-})
+app.listen(3000, () => console.log('Running server...'))
 
