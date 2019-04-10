@@ -8,26 +8,23 @@ const bcrypt= require('bcrypt')
 const saltRounds = 10;
 var session = require('express-session')
 let parkListRequests = []
+app.all('/login/*', authenticate)
 
 //session setup
+geocodeApi = "c8bb868a5cf89ccfca4b5a8bc25cf8ca7bb7c70"
+app.engine('mustache', mustacheExpress())
+app.set('views', './views')
+app.set('view engine', 'mustache')
+app.use(bodyParser.urlencoded({extended:false}))
 app.use(session({
     secret:'travelBug',
     resave:false,
     saveUninitialized: true
 }))
-app.all('/login/*', authenticate)
-
-geocodeApi = "c8bb868a5cf89ccfca4b5a8bc25cf8ca7bb7c70"
-
-app.engine('mustache', mustacheExpress())
-app.set('views', './views')
-app.set('view engine', 'mustache')
-app.use(bodyParser.urlencoded({extended:false}))
 
 app.get('/state-details/', (req,res) => {
     res.render('stateDetails')
 })
-
 
 app.post('/state-details', (req,res) => {
     let state = req.body.state.toUpperCase();
@@ -95,15 +92,17 @@ app.post('/campground-info', (req,res) => {
     }) 
 })
 
-app.post('/add-favorite', (req,res) => {
-    
-    models.Parks.build({
+app.post('/add-favorite', (req,res) => 
+{
+    models.Parks.build(
+    {
         postid: postid,
         username: username, 
         comment: comment
     })
     .save()
-    .then(x => {
+    .then(x => 
+    {
         res.redirect('/index/view-all')
     })
 })
@@ -126,59 +125,58 @@ app.get('/login',(req, res)=> {
     res.render('login')
 })
 
-app.get('/register', (req,res)=>{
-    res.render('register') 
-})
+// app.get('/register', (req,res)=>{
+//     res.render('register') 
+//     bcrypt.hash(password, saltRounds, function(error, hash) {
+//     models.User.create({
+//         username: username,
+//         password: hash
+//     })
+//     .then(console.log("SUCCESS"))
+//      res.redirect('/login')
+// })
 
 
-bcrypt.hash(password, saltRounds, function(error, hash) {
-    models.User.create({
-        username: username,
-        password: hash
-    })
-    .then(console.log("SUCCESS"))
-     res.redirect('/login')
-})
-
-
-app.post('/login', (req, res)=>{
-    
-    let memberU = req.body.memberU
-    let memberP = req.body.memberP
-
-    models.User.findOne({
-        where: {
-            username: memberU
-        }
-    })
-    .then(function(user) {
-        if (user === null) {
-            res.render('login', {message: "Sorry invalid username and/or password"})
-        }
-
-        else {
-            bcrypt.compare(memberP, user.password, function(err, result) {
-                if(result) {
-                    if(req.session) {
-                        req.session.userId = user.id 
-                    }
-
-                    res.redirect('/homePage')
-                }
-
-                else {
-                    res.render('login', {message: "Sorry invalid password"})
-                }
-            })
-        }
-    })
-
-
-})
+// app.post('/login', (req, res)=>{
+//     let memberU = req.body.memberU
+//     let memberP = req.body.memberP
+//     models.User.findOne(
+//     {
+//         where: 
+//         {
+//             username: memberU
+//         }
+//     })
+//     .then(function(user) 
+//     {
+//         if (user === null) 
+//         {
+//             res.render('login', {message: "Sorry invalid username and/or password"})
+//         }
+//         else 
+//         {
+//             bcrypt.compare(memberP, user.password, function(err, result) 
+//             {
+//                 if(result) 
+//                 {
+//                     if(req.session) 
+//                     {
+//                         req.session.userId = user.id 
+//                     }
+//                     res.redirect('/homePage')
+//                 }
+//                 else 
+//                 {
+//                     res.render('login', {message: "Sorry invalid password"})
+//                 }
+//             })
+//         }
+//     })
+// })
 
 app.get('/login/homePage',(req, res)=>{
     res.render('homePage')
-
+})
 
 app.get('/favorites',(req,res) =>
 {
