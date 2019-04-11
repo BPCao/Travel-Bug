@@ -88,7 +88,8 @@ app.post('/login', (req, res)=>{
             bcrypt.compare(memberP, user.password, function(err, result) {
                 if(result) {
                     if(req.session) {
-                        req.session.userId = user.id 
+                        req.session.userId = user.id
+                        req.session.username = memberU 
                     }
 
                     res.redirect('/login/homePage')
@@ -117,11 +118,11 @@ app.get('/login/homePage/logout', function(req,res,next){
 })
 
 app.get('/login/homePage',(req, res)=>{
-    res.render('homePage')
+    res.render('homePage', {loginMessage:`Welcome, ${req.session.username}!`})
 })
 
 app.post('/homePage', (req,res) => {
-    let state = req.body.state.toUpperCase();
+    let state = req.body.state
     let city = req.body.city
     if(state == '' || city == ''){
         res.render('homePage', {message:"Please enter both a city and a state :)"})
@@ -178,7 +179,10 @@ app.post('/homePage', (req,res) => {
                 }
             })
             resultsDisplay.sort((a,b) => (a.distance > b.distance) ? 1 : ((b.distance > a.distance) ? -1 : 0));
-            res.render('homePage', {results:resultsDisplay, state:state, message:`Here are the \
+            res.render('homePage', {
+                loginMessage:`Logged in as ${req.session.username}`,
+                results:resultsDisplay, 
+                state:state, message:`Here are the \
             ${locationType} ordered by distance from ${city}, ${state}. Get that travel bug! :)`})
         })  
     })
@@ -212,10 +216,10 @@ app.post('/add-favorite', (req,res) => {
     else if(locationType == 'places'){
         parkcode = req.body.title
     } 
-    let userId = req.body.userId
+    console.log(req.session.username)
     models.Parks.build({
         parkid: parkcode,
-        userid: userId,
+        userid: req.session.username,
         category: locationType
     })
     .save()
@@ -228,15 +232,6 @@ app.get('/login/homePage',(req, res)=>{
     res.render('homePage')
 })
 
-
-// app.post('/login', (res, req)=>{
-
-//     let memberU = req.body.memeberU
-//     let memberP = req.body.memberP
-
-//     if()
-
-// })
 app.post('/search-redirect', (req,res) => {
     res.render('homePage')
 })
@@ -244,12 +239,15 @@ app.post('/search-redirect', (req,res) => {
 app.get('/login/homePage/favorites',(req,res) =>
 {
     let parkListRequests = []
-    models.Parks.findAll()
+    models.Parks.findAll({
+        where: {
+            userid: req.session.username
+        }
+    })
     .then(parkcodeList => 
     {
         for (let park of parkcodeList)
         {   
-            console.log('test')
             let parkid = park.dataValues.parkid
             let category = park.dataValues.category
             let fetchURL = ''
@@ -259,7 +257,6 @@ app.get('/login/homePage/favorites',(req,res) =>
             else if (category == 'places'){
                 fetchURL = `https://developer.nps.gov/api/v1/${category}?q=${parkid}&api_key=YM83j0nOk32AyONYaqMkisirhWoF8XYyEEbCZ8Gk`   
             }
-            console.log(fetchURL)
         parkListRequests.push(fetch(fetchURL))
         }
         Promise.all(parkListRequests)
