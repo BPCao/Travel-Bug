@@ -7,9 +7,12 @@ const models = require('./models')
 const bcrypt= require('bcrypt')
 const saltRounds = 10;
 const session = require('express-session')
+const path = require('path')
+const VIEWS_PATH = path.join(__dirname, '/views');
 const PORT = process.env.PORT || 8080
 let geocodeApi = "c8bb868a5cf89ccfca4b5a8bc25cf8ca7bb7c70"
-
+console.log(__dirname)
+console.log(VIEWS_PATH)
 //session setup
 app.use(session({
     secret:'travelBug',
@@ -33,7 +36,7 @@ function authenticate(req,res,next){
 app.all('/login/*', authenticate)
 
 
-app.engine('mustache', mustacheExpress())
+app.engine('mustache', mustacheExpress(VIEWS_PATH + '/partials', '.mustache'))
 app.set('views', './views')
 app.set('view engine', 'mustache')
 app.use(bodyParser.urlencoded({extended:false}))
@@ -71,6 +74,10 @@ app.get('/login',(req, res)=> {
     res.render('login')
 })
 
+app.get('/',(req, res)=> {
+    res.redirect('/login')
+})
+
 app.post('/login', (req, res)=>{
     let memberU = req.body.memberU
     let memberP = req.body.memberP
@@ -103,8 +110,7 @@ app.post('/login', (req, res)=>{
     })
 })
 
-app.get('/login/homePage/logout', function(req,res,next){
-    
+app.get('/login/homePage/logout', function(req,res,next){    
     if(req.session){
         //delete session object
         req.session.destroy(function(err){
@@ -299,9 +305,9 @@ app.post('/delete-favorite', (req,res) => {
 })
 
 
-// app.listen(3000, () => {
-//     console.log('running...')
-// })
+app.listen(3000, () => {
+    console.log('running...')
+})
 
-app.listen(PORT, () => console.log('Running server...'))
+// app.listen(PORT, () => console.log('Running server...'))
 
