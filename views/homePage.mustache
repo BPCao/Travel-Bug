@@ -84,7 +84,7 @@
         <img style = 'width:400px' src = {{listingImage}}>
         {{/listingImage}}
         <form action = '/add-favorite' method = 'POST'>
-            <input type = 'hidden' name = 'locationType' value = '{{locationType}}'>
+            <input type = 'hidden' name = 'favoriteType' value = '{{locationType}}'>
             <input type = 'hidden' name = 'parkCode' value = '{{parkCode}}'>
             <input type = 'hidden' name = 'title' value = '{{title}}'>
             <button formaction = '/add-favorite' type = 'submit'>Add selection to your favorites</button>

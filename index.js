@@ -214,7 +214,7 @@ app.post('/campground-info', (req,res) => {
 })
 
 app.post('/add-favorite', (req,res) => {
-    let locationType = req.body.locationType
+    let locationType = req.body.favoriteType
     let parkcode 
     if(locationType == 'parks'){
         parkcode = req.body.parkCode
