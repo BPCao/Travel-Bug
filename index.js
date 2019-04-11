@@ -6,8 +6,9 @@ const fetch = require('node-fetch')
 const models = require('./models')
 const bcrypt= require('bcrypt')
 const saltRounds = 10;
-
-var session = require('express-session')
+const session = require('express-session')
+const PORT = process.env.PORT || 8080
+let geocodeApi = "c8bb868a5cf89ccfca4b5a8bc25cf8ca7bb7c70"
 
 //session setup
 app.use(session({
@@ -31,7 +32,6 @@ function authenticate(req,res,next){
 }
 app.all('/login/*', authenticate)
 
-geocodeApi = "c8bb868a5cf89ccfca4b5a8bc25cf8ca7bb7c70"
 
 app.engine('mustache', mustacheExpress())
 app.set('views', './views')
@@ -45,16 +45,14 @@ app.get('/register', (req,res)=>{
 })
 
 app.post('/register',(req,res)=>{
-  
     let username = req.body.username
     let password = req.body.password 
-
     models.User.findOne({
         where:{
             username: username
         }
     }).then(function(user){
-        if(user.username){
+        if(user != null){
             res.render('register', {message: "That username is already taken, please try again."})
         }else{
             bcrypt.hash(password, saltRounds, function(error, hash) {
@@ -67,19 +65,15 @@ app.post('/register',(req,res)=>{
             })
         }
     })
-    
-
- 
 })
+
 app.get('/login',(req, res)=> {
     res.render('login')
 })
 
 app.post('/login', (req, res)=>{
-    
     let memberU = req.body.memberU
     let memberP = req.body.memberP
-
     models.User.findOne({
         where: {
             username: memberU
@@ -106,8 +100,6 @@ app.post('/login', (req, res)=>{
             })
         }
     })
-
-
 })
 
 app.get('/login/homePage/logout', function(req,res,next){
@@ -121,15 +113,12 @@ app.get('/login/homePage/logout', function(req,res,next){
                 return res.redirect('/login')
             }
         })
-
     }
-    
 })
 
 app.get('/login/homePage',(req, res)=>{
     res.render('homePage')
 })
-
 
 app.post('/homePage', (req,res) => {
     let state = req.body.state.toUpperCase();
@@ -195,7 +184,6 @@ app.post('/homePage', (req,res) => {
     })
 })
 
-
 app.post('/favorites-redirect', (req,res) => {
     res.redirect('/login/homePage/favorites')
 })
@@ -235,8 +223,6 @@ app.post('/add-favorite', (req,res) => {
         res.render('homePage', {message: "The " + locationType.substring(0,locationType.length - 1) + " has been added to your favorites. Go back to view your search results again :)"})
     })
 })
-
-
 
 app.get('/login/homePage',(req, res)=>{
     res.render('homePage')
@@ -316,8 +302,9 @@ app.post('/delete-favorite', (req,res) => {
 })
 
 
-app.listen(3000, () => {
-    console.log('running...')
-})
+// app.listen(3000, () => {
+//     console.log('running...')
+// })
 
+app.listen(PORT, () => console.log('Running server...'))
 
