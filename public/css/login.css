@@ -1,0 +1,32 @@
+
+h1{
+    text-align:center;
+}
+
+body{
+    background-image: url("/images/yosemite-waterfall.jpg");
+    background-size: 100%;
+}
+
+#formStyling{
+    background-color:#ffffff67;
+  align-content: center;
+  height:300px;
+  width: 600px;
+  margin-left:30%;
+  margin-top: 5%;
+  padding-top: 10%
+}
+
+
+
+input{
+    width: 500px;
+    padding: 12px 20px;
+  margin: 20px 0;
+  box-sizing: border-box;
+}
+
+#btnStyling{
+
+}

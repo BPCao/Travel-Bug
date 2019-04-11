@@ -1,18 +1,24 @@
 <html>
-<head><head>
+<head>
+<link rel="stylesheet"  href="/css/login.css" />
+<head>
 <body>
 <div>
 <h1>Travel Bug</h1>
 
-{{message}}
 
+{{message}}
+<div id="formStyling">
 <form action="/login" method="POST">
-<input type="text" name="memberU"  placeholder="Enter Username"/>
-<input type="password" name="memberP"  placeholder="Enter Password"/>
+<input type="text" name="memberU"  placeholder="Enter Username"/><br>
+<input type="password" name="memberP"  placeholder="Enter Password"/><br>
 <button type="submit">Login</button>
 </form>
+<div>
+<button id="btnStyling"><a href="/register">Register</a></button>
+</div>
+</div>
 
-<button><a href="/register">Register</a></button>
 
 </div>
 

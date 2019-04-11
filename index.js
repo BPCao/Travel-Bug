@@ -38,8 +38,7 @@ app.engine('mustache', mustacheExpress())
 app.set('views', './views')
 app.set('view engine', 'mustache')
 app.use(bodyParser.urlencoded({extended:false}))
-
-
+app.use(express.static(__dirname + '/public'))
 
 app.get('/register', (req,res)=>{
     res.render('register') 
@@ -55,7 +54,7 @@ app.post('/register',(req,res)=>{
             username: username
         }
     }).then(function(user){
-        if(user.username){
+        if(user != null){
             res.render('register', {message: "That username is already taken, please try again."})
         }else{
             bcrypt.hash(password, saltRounds, function(error, hash) {
@@ -169,7 +168,7 @@ app.post('/state-details', (req,res) => {
     let state = req.body.state.toUpperCase();
     let city = req.body.city
     if(state == '' || city == ''){
-        res.render('stateDetails', {message:"Please enter both a city and a state :)"})
+        res.render('homePage', {message:"Please enter both a city and a state :)"})
     }
     city = city.charAt(0).toUpperCase() + city.slice(1)
     let locationType = req.body.locationType.toLowerCase();
@@ -177,7 +176,7 @@ app.post('/state-details', (req,res) => {
 .then(response => response.json())
 .then(result => {
     if(result.error){
-        res.render('stateDetails', {message:"Hmm, your search didn\'t return any results. Try again."})
+        res.render('homePage', {message:"Hmm, your search didn\'t return any results. Try again."})
     }
     let cityCoord = {lat:result.results[0].location.lat, long:result.results[0].location.lng}
         fetch(`https://developer.nps.gov/api/v1/${locationType}?api_key=YM83j0nOk32AyONYaqMkisirhWoF8XYyEEbCZ8Gk&statecode=${state}`)
@@ -263,7 +262,7 @@ app.post('/add-favorite', (req,res) => {
     .save()
     .then(x => {
 
-        res.render('stateDetails', {message: "The " + locationType.substring(0,locationType.length - 1) + " has been added to your favorites. Go back to view your search results again :)"})
+        res.render('homePage', {message: "The " + locationType.substring(0,locationType.length - 1) + " has been added to your favorites. Go back to view your search results again :)"})
 
     })
 })
