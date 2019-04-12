@@ -7,15 +7,20 @@
 <h1>Travel Bug</h1>
 
 
-{{message}}
+
 <div id="formStyling">
+
 <form action="/login" method="POST">
 <input type="text" name="memberU"  placeholder="Enter Username"/><br>
 <input type="password" name="memberP"  placeholder="Enter Password"/><br>
-<button type="submit">Login</button>
+<div id="errorMessageStyling">{{message}}</div>
+<button id="loginbtnCSS"type="submit">Login</button>
 </form>
-<div>
-<button id="btnStyling"><a href="/register">Register</a></button>
+
+<hr>
+
+<div id="registerBtnPositioning">
+<button><a id="linkStyling" href="/register">Register</a></button>
 </div>
 </div>
 
