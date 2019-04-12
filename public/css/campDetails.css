@@ -1,0 +1,11 @@
+#parksStyling{
+    list-style: none;
+}
+
+body{
+    background-color: black;
+}
+
+#contentStyling{
+    color: white;
+}
