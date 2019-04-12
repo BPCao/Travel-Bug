@@ -1,18 +1,20 @@
 <html>
 <head>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link rel="stylesheet" href="/css/favorites.css">
 </head>
 <body>
     {{> menuBar}}
-    <h1>Your Favorite Parks and Places :)</h1>
-    <form method = 'post' action = '/search-redirect'>
-    <button type = 'submit'>Search for more places!</button>
-    </form>
+    <br>
+    <div id = 'favorites-container'>
+    <h4 style="margin-left: 16px;">Your Favorite Parks and Places</h4>
     <h2>{{message}}</h2>
-    <ul>
+    <br>
+    <br>
+    <ul style="margin-left:16px;padding-left:0px;">
 {{#parkList}}
-        <li>
-        <h1>{{fullName}}{{title}}</h1>
+        <li style="list-style-type:none;">
+        <h5>{{fullName}}{{title}}</h5>
         <p>{{description}}</p>
         <p>{{listingdescription}}</p>
         {{#listingimage}}
@@ -22,11 +24,12 @@
             <input name = 'parkCode' value = '{{parkCode}}' type = 'hidden'>
             <input name = 'fullName' value = '{{fullName}}' type = 'hidden'>
             <input name = 'title' type = 'hidden' value = '{{title}}'>
-            <button type = 'submit' formaction = '/delete-favorite'>Delete Item</button>
+            <button type = 'submit' formaction = '/delete-favorite' class= "btn btn-light">Delete Item</button>
         </form> 
         </li>
     {{/parkList}}
-
+    </ul>
+    </div>
 </body>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
