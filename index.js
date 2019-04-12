@@ -305,9 +305,8 @@ app.post('/delete-favorite', (req,res) => {
 })
 
 
-app.listen(3000, () => {
+app.listen(PORT, () => {
     console.log('running...')
 })
 
-// app.listen(PORT, () => console.log('Running server...'))
 
