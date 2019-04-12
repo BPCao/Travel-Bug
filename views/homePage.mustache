@@ -4,17 +4,20 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-		<link rel="stylesheet" href="/css/search.css">
+		 <link rel="stylesheet" href="/css/mobile.css">
+		<link rel="stylesheet" media="screen and (min-width: 992px)" href="/css/search.css">
+		
   </head>
   <body>
-    {{> menuBar}}
+
+  	 {{> menuBar}}
 <br>
 <br>
 <div id='search-container' >
 <div id='search-bar'>
 <form action = '/homePage' method = 'POST'> 
 <input placeholder = 'Enter City' name = 'city'>
-<select name = 'state'>
+<select name = 'state' id='state'>
   <option value = ''>Select State</option>
 	<option value="AL">Alabama</option>
 	<option value="AK">Alaska</option>
@@ -68,11 +71,11 @@
 	<option value="WI">Wisconsin</option>
 	<option value="WY">Wyoming</option>
 </select>
-<select name = 'locationType'>
+<select name = 'locationType' id="parkorplace">
   <option value="Parks">Parks</option>
   <option value="Places">Places</option>
 </select>
-<button type = 'submit'>Search </button>
+<button type = 'submit' class="btn btn-light">Search </button>
 </div>
 </div>
 <br>

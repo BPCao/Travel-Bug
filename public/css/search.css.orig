@@ -1,0 +1,61 @@
+body {
+    background-color: black;
+}
+
+#search-container {
+    background-image: url(/images/roadtrip.png);
+    background-size:cover;
+    background-repeat:no-repeat;
+    height: 20em;
+   margin-top: 5%;
+}
+
+#search-bar {
+    vertical-align: center;
+    display: flex;
+    justify-content: center; 
+    padding-top: 11%;
+}
+
+ul {
+    list-style-type: none;
+    color: #888e94;
+}
+
+#results-message {
+    color: #888e94;
+<<<<<<< HEAD
+    margin-left: 38px;
+    padding-bottom: 40px; 
+    text-align: center;
+}
+
+#parksButtonsStyling{
+    display: flex;
+}
+
+#favoritesBtn{
+    padding-right: 10px;
+}
+
+h5{
+    text-decoration: underline;
+}
+
+#spacing{
+padding-bottom: 5%;
+}
+
+
+=======
+    margin-left: 38px; 
+}
+
+#state {
+    background-color: white;
+}
+
+#parkorplace {
+    background-color: white;
+}
+>>>>>>> a3bc7d82e90f7f34f81cc18ca914c13cbc5a5a87
