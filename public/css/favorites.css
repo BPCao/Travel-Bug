@@ -1,0 +1,9 @@
+body {
+    background-image: url("/images/bridge2.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+}   
+
+#favorites-container{
+    margin-top:10em;
+}
