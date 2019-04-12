@@ -49,12 +49,21 @@ font-family: fantasy;
 letter-spacing: 3px;
 }
 
+#loginbtnCSS:hover{
+  background-color: #9498a1ef;
+}
+
+
 #registerBtnPositioning{
 display: flex;
 justify-content: center;
 padding-right: 15%;
 padding-top: 5%;
 }
+
+button:hover{
+  background-color:rgb(242, 242, 248);
+  }
 
 #linkStyling{
     text-decoration: none;

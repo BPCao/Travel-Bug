@@ -87,7 +87,7 @@ app.post('/login', (req, res)=>{
     })
     .then(function(user) {
         if (user === null) {
-            res.render('login', {message: "Sorry invalid username and/or password"})
+            res.render('login', {message: "Sorry invalid username and/or password"});
         }
 
         else {
@@ -229,9 +229,7 @@ app.post('/add-favorite', (req,res) => {
     })
     .save()
     .then(x => {
-
         res.render('homePage', {message: "The " + locationType.substring(0,locationType.length - 1) + " has been added to your favorites. Go back to view your search results again :)"})
-
     })
 })
 
@@ -307,8 +305,11 @@ app.post('/delete-favorite', (req,res) => {
 
 
 app.listen(3000, () => {
-    console.log('running...')
+    console.log('Server is running...')
 })
 
+<<<<<<< HEAD
+=======
 // app.listen(PORT, () => console.log('Running server...'))
 
+>>>>>>> master
