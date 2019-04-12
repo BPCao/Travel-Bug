@@ -1,0 +1,46 @@
+body{
+    background-image: url("/images/yosemite-waterfall.jpg");
+    background-size: 100%;
+}
+
+h1{
+    text-align:center;
+    font-family: fantasy;
+    font-size: 40px;
+    padding-top: 25px;
+    letter-spacing: 10px;
+}
+
+#formStyling{
+    background-color:#ffffff67;
+  align-content: center;
+  height:300px;
+  width: 600px;
+  margin-left:21%;
+  margin-top: 5%;
+  padding: 10% 5% 5% 10%
+}
+
+input{
+    width: 500px;
+    padding: 12px 20px;
+  margin: 20px 0;
+  box-sizing: border-box;
+}
+
+#errorMessageStyling{
+    text-align: center;
+    padding-right: 15%;
+}
+
+
+button{
+    width: 500px;
+    padding: 15px;
+    margin-top: 5%;
+    background-color:#757780ef;
+    border-radius: 29px;
+    border: none;
+    font-family: fantasy;
+    letter-spacing: 3px;
+}

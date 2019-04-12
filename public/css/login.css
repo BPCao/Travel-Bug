@@ -1,0 +1,72 @@
+
+h1{
+    text-align:center;
+    font-family: fantasy;
+    font-size: 40px;
+    padding-top: 25px;
+    letter-spacing: 10px;
+}
+
+body{
+    background-image: url("/images/yosemite-waterfall.jpg");
+    background-size: 100%;
+}
+
+#formStyling{
+    background-color:#ffffff67;
+  align-content: center;
+  height:300px;
+  width: 600px;
+  margin-left:21%;
+  margin-top: 5%;
+  padding: 10% 5% 5% 10%
+  
+}
+
+
+
+input{
+    width: 500px;
+    padding: 12px 20px;
+  margin: 20px 0;
+  box-sizing: border-box;
+}
+
+
+#errorMessageStyling {
+text-align: center;
+padding-right: 15%;
+}
+
+#loginbtnCSS{
+width: 500px;
+padding: 15px;
+margin-top: 5%;
+background-color:#757780ef;
+border-radius: 29px;
+border: none;
+font-family: fantasy;
+letter-spacing: 3px;
+}
+
+#loginbtnCSS:hover{
+  background-color: #9498a1ef;
+}
+
+
+#registerBtnPositioning{
+display: flex;
+justify-content: center;
+padding-right: 15%;
+padding-top: 5%;
+}
+
+button:hover{
+  background-color:rgb(242, 242, 248);
+  }
+
+#linkStyling{
+    text-decoration: none;
+    color: black;
+    padding: 15px ;
+}

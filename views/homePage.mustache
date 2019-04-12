@@ -1,19 +1,23 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
+		 <link rel="stylesheet" href="/css/mobile.css">
+		<link rel="stylesheet" media="screen and (min-width: 992px)" href="/css/search.css">
+		
   </head>
   <body>
-    {{> menuBar}}
+
+  	 {{> menuBar}}
+<br>
+<br>
+<div id='search-container' >
+<div id='search-bar'>
 <form action = '/homePage' method = 'POST'> 
 <input placeholder = 'Enter City' name = 'city'>
-<select name = 'state'>
+<select name = 'state' id='state'>
   <option value = ''>Select State</option>
 	<option value="AL">Alabama</option>
 	<option value="AK">Alaska</option>
@@ -67,16 +71,19 @@
 	<option value="WI">Wisconsin</option>
 	<option value="WY">Wyoming</option>
 </select>
-<select name = 'locationType'>
+<select name = 'locationType' id="parkorplace">
   <option value="Parks">Parks</option>
   <option value="Places">Places</option>
 </select>
-<button type = 'submit'>Search </button>
-<h1>{{message}}</h1>
+<button type = 'submit' class="btn btn-light">Search </button>
+</div>
+</div>
+<br>
+<h4 id="results-message">{{message}}</h4>
 
 <ul>
     {{#results}}
-        <li><h1>{{name}}{{title}}</h1>
+        <li><h5>{{name}}{{title}}</h5>
         <p>{{description}}</p>
         <p>{{weatherInfo}}</p>
         <p>{{listingdescription}}</p>
@@ -87,14 +94,16 @@
             <input type = 'hidden' name = 'favoriteType' value = '{{locationType}}'>
             <input type = 'hidden' name = 'parkCode' value = '{{parkCode}}'>
             <input type = 'hidden' name = 'title' value = '{{title}}'>
-            <button formaction = '/add-favorite' type = 'submit'>Add selection to your favorites</button>
+            <button formaction = '/add-favorite' type = 'submit' class="btn btn-light">Add selection to your favorites</button>
         </form>
+				<br>
         {{#parkInfo}}
         <form action = '/campground-info' method = 'POST'>
             <input type = 'hidden' name = 'parkCode' value = '{{parkCode}}'>
             <input type = 'hidden' name = 'parkName' value = '{{parkName}}'>
-            <button formaction = '/campground-info' type = 'submit'>Click here to view available campgrounds!</button>
+            <button formaction = '/campground-info' type = 'submit' class="btn btn-light">Click here to view available campgrounds!</button>
         </form>
+				<br>
         {{/parkInfo}}
         </li>
     {{/results}}
