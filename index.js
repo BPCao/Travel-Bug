@@ -11,8 +11,6 @@ const path = require('path')
 const VIEWS_PATH = path.join(__dirname, '/views');
 const PORT = process.env.PORT || 8080
 let geocodeApi = "c8bb868a5cf89ccfca4b5a8bc25cf8ca7bb7c70"
-console.log(__dirname)
-console.log(VIEWS_PATH)
 //session setup
 app.use(session({
     secret:'travelBug',
@@ -229,7 +227,7 @@ app.post('/add-favorite', (req,res) => {
     })
     .save()
     .then(x => {
-        res.render('homePage', {message: "The " + locationType.substring(0,locationType.length - 1) + " has been added to your favorites. Go back to view your search results again :)"})
+        res.render('homePage', {message: "The " + locationType.substring(0,locationType.length - 1) + " has been added to your favorites."})
     })
 })
 

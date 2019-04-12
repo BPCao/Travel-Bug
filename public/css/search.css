@@ -1,0 +1,27 @@
+body {
+    background-color: black;
+}
+
+#search-container {
+    background-image: url(/images/roadtrip.png);
+    background-size:cover;
+    background-repeat:no-repeat;
+    height: 20em;
+}
+
+#search-bar {
+    vertical-align: center;
+    display: flex;
+    justify-content: center; 
+    padding-top: 11%;
+}
+
+ul {
+    list-style-type: none;
+    color: #888e94;
+}
+
+#results-message {
+    color: #888e94;
+    margin-left: 38px; 
+}
