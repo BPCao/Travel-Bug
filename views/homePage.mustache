@@ -81,6 +81,7 @@
 
 <ul>
     {{#results}}
+		<div id="spacing">
         <li><h5>{{name}}{{title}}</h5>
         <p>{{description}}</p>
         <p>{{weatherInfo}}</p>
@@ -88,23 +89,29 @@
         {{#listingImage}}
         <img style = 'width:400px' src = {{listingImage}}>
         {{/listingImage}}
+				<div id="parksButtonsStyling">
+				<div id="favoritesBtn">
         <form action = '/add-favorite' method = 'POST'>
             <input type = 'hidden' name = 'favoriteType' value = '{{locationType}}'>
             <input type = 'hidden' name = 'parkCode' value = '{{parkCode}}'>
             <input type = 'hidden' name = 'title' value = '{{title}}'>
-            <button formaction = '/add-favorite' type = 'submit' class="btn btn-light">Add selection to your favorites</button>
+            <button formaction = '/add-favorite' type = 'submit' class="btn btn-light">Add to favorites</button>
         </form>
-				<br>
+				</div>
         {{#parkInfo}}
+				<div id="campgroundBtn">
         <form action = '/campground-info' method = 'POST'>
             <input type = 'hidden' name = 'parkCode' value = '{{parkCode}}'>
             <input type = 'hidden' name = 'parkName' value = '{{parkName}}'>
-            <button formaction = '/campground-info' type = 'submit' class="btn btn-light">Click here to view available campgrounds!</button>
+            <button formaction = '/campground-info' type = 'submit' class="btn btn-light">View available campgrounds!</button>
         </form>
-				<br>
+				</div>
+				</div>
+				</div>
         {{/parkInfo}}
         </li>
     {{/results}}
+
 </ul>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

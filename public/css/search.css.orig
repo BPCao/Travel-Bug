@@ -24,6 +24,7 @@ ul {
 
 #results-message {
     color: #888e94;
+<<<<<<< HEAD
     margin-left: 38px;
     padding-bottom: 40px; 
     text-align: center;
@@ -46,3 +47,15 @@ padding-bottom: 5%;
 }
 
 
+=======
+    margin-left: 38px; 
+}
+
+#state {
+    background-color: white;
+}
+
+#parkorplace {
+    background-color: white;
+}
+>>>>>>> a3bc7d82e90f7f34f81cc18ca914c13cbc5a5a87
