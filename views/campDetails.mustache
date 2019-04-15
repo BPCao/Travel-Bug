@@ -11,14 +11,16 @@
 </head>
 <body>
     {{> menuBar}}
-<h1>{{message}}</h1>
-<div id="parksStyling">{{#results}}</div>
-<div id="contentStyling">
-<h2>{{name}}</h2>
-<p>{{description}}<p>
+<div id="parksStyling">
+  <div id="messageStyling">{{message}}</div>
+    {{#results}}
+        <div id="contentStyling">
+        <h2>{{name}}</h2>
+        <p>{{description}}<p>
+        </div>
+    {{/results}}
 </div>
-{{/results}}
-
+<br>
 <h5>Press the back button to keep browsing your search results, or press the button below to make a new one!</h5>
 <a href = '/login/homePage/'><button>New Search</button></a>
     <!-- Optional JavaScript -->

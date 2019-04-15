@@ -1,5 +1,6 @@
 #parksStyling{
     list-style: none;
+    padding-top: 15%;
 }
 
 body{
@@ -7,5 +8,13 @@ body{
 }
 
 #contentStyling{
+    color: #888e94;
+}
+
+h5{
+  color:  #888e94;
+}
+
+#messageStyling{
     color: white;
 }

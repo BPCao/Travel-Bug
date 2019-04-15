@@ -4,12 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-		 <link rel="stylesheet" href="/css/mobile.css">
 		<link rel="stylesheet" media="screen and (min-width: 992px)" href="/css/search.css">
-		
+		<link rel="stylesheet" href="/css/mobile.css">
   </head>
   <body>
-
   	 {{> menuBar}}
 <br>
 <br>
@@ -83,6 +81,7 @@
 
 <ul>
     {{#results}}
+		<div id="spacing">
         <li><h5>{{name}}{{title}}</h5>
         <p>{{description}}</p>
         <p>{{weatherInfo}}</p>
@@ -90,23 +89,29 @@
         {{#listingImage}}
         <img style = 'width:400px' src = {{listingImage}}>
         {{/listingImage}}
+				<div id="parksButtonsStyling">
+				<div id="favoritesBtn">
         <form action = '/add-favorite' method = 'POST'>
             <input type = 'hidden' name = 'favoriteType' value = '{{locationType}}'>
             <input type = 'hidden' name = 'parkCode' value = '{{parkCode}}'>
             <input type = 'hidden' name = 'title' value = '{{title}}'>
-            <button formaction = '/add-favorite' type = 'submit' class="btn btn-light">Add selection to your favorites</button>
+            <button formaction = '/add-favorite' type = 'submit' class="btn btn-light">Add to favorites</button>
         </form>
-				<br>
+				</div>
         {{#parkInfo}}
+				<div id="campgroundBtn">
         <form action = '/campground-info' method = 'POST'>
             <input type = 'hidden' name = 'parkCode' value = '{{parkCode}}'>
             <input type = 'hidden' name = 'parkName' value = '{{parkName}}'>
-            <button formaction = '/campground-info' type = 'submit' class="btn btn-light">Click here to view available campgrounds!</button>
+            <button formaction = '/campground-info' type = 'submit' class="btn btn-light">View available campgrounds!</button>
         </form>
-				<br>
+				</div>
+				</div>
+				</div>
         {{/parkInfo}}
         </li>
     {{/results}}
+
 </ul>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

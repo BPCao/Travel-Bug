@@ -7,6 +7,7 @@ body {
     background-size:cover;
     background-repeat:no-repeat;
     height: 20em;
+   margin-top: 5%;
 }
 
 #search-bar {
@@ -23,13 +24,25 @@ ul {
 
 #results-message {
     color: #888e94;
-    margin-left: 38px; 
+    margin-left: 38px;
+    padding-bottom: 40px; 
+    text-align: center;
 }
 
-#state {
-    background-color: white;
+#parksButtonsStyling{
+    display: flex;
 }
 
-#parkorplace {
-    background-color: white;
+#favoritesBtn{
+    padding-right: 10px;
 }
+
+h5{
+    text-decoration: underline;
+}
+
+#spacing{
+padding-bottom: 5%;
+}
+
+

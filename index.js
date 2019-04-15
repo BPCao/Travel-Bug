@@ -201,7 +201,7 @@ app.post('/campground-info', (req,res) => {
     fetch(`https://developer.nps.gov/api/v1/campgrounds?api_key=YM83j0nOk32AyONYaqMkisirhWoF8XYyEEbCZ8Gk&parkcode=${parkCode}`)
     .then(response => response.json())
     .then(results => {
-        if(results.data.length == 0){
+        if(results.data[0].name == 'No Campgrounds'){
             res.render('campDetails', {message:`Sorry, no available campground details for ${parkName} in the database. Try again.`})
         }
         else{
@@ -303,7 +303,7 @@ app.post('/delete-favorite', (req,res) => {
 
 
 app.listen(PORT, () => {
-    console.log('running...')
+    console.log('Server is running...')
 })
 
 

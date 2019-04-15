@@ -7,7 +7,7 @@ body {
     background-size:cover;
     background-repeat:no-repeat;
     height: 20em;
-    margin-top: 30%;
+   margin-top: 5%;
 }
 
 #search-bar {
@@ -24,6 +24,30 @@ ul {
 
 #results-message {
     color: #888e94;
+<<<<<<< HEAD
+    margin-left: 38px;
+    padding-bottom: 40px; 
+    text-align: center;
+}
+
+#parksButtonsStyling{
+    display: flex;
+}
+
+#favoritesBtn{
+    padding-right: 10px;
+}
+
+h5{
+    text-decoration: underline;
+}
+
+#spacing{
+padding-bottom: 5%;
+}
+
+
+=======
     margin-left: 38px; 
 }
 
@@ -34,7 +58,4 @@ ul {
 #parkorplace {
     background-color: white;
 }
-
-#logo {
-    height: 50px;
-}
+>>>>>>> a3bc7d82e90f7f34f81cc18ca914c13cbc5a5a87
