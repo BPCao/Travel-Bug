@@ -5,7 +5,7 @@ This application uses the National Park Service (NPS) API to get a brief descrip
 
 Features
 
-Users must register through the websites (deployed through heroku), and after logging in, can search by city and state to find a list of parks or places to add to a favorites list.
+Users must register through the website (deployed through heroku) and after logging in, can search by city and state to find a list of parks or places to add to a favorites list.
 
 
 
