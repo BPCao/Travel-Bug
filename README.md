@@ -7,6 +7,12 @@ Features
 
 Users must register through the websites (deployed through heroku), and after logging in, can search by city and state to find a list of parks or places to add to a favorites list.
 
+
+
+![travelbug](https://user-images.githubusercontent.com/47377631/56103956-15f9b780-5efb-11e9-914c-aa5c74c1ae4c.gif)
+
+
+
 Authors
 
 Paul Wu, Audi-ana Brown, Bach Cao
