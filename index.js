@@ -121,7 +121,7 @@ app.get('/login/homePage/logout', function(req,res,next){
 })
 
 app.get('/login/homePage',(req, res)=>{
-    res.render('homePage', {loginMessage:`Welcome, ${req.session.username}!`})
+    res.render('homePage', {message:`Welcome, ${req.session.username}! Enter a city and state above :)`})
 })
 
 app.post('/homePage', (req,res) => {
@@ -174,6 +174,7 @@ app.post('/homePage', (req,res) => {
                         parkCode:parkCode,
                         listingdescription:x.listingdescription,
                         locationType:locationType,
+                        directionsUrl:x.directionsUrl,
                         parkInfo:{
                             parkCode:parkCode,
                             parkName:x.name                        
@@ -305,4 +306,6 @@ app.post('/delete-favorite', (req,res) => {
 app.listen(PORT, () => {
     console.log('Server is running...')
 })
+
+
 
