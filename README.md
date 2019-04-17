@@ -11,7 +11,7 @@ Users must register through the website (deployed through heroku) and after logg
 
 ![travelbug](https://user-images.githubusercontent.com/47377631/56103956-15f9b780-5efb-11e9-914c-aa5c74c1ae4c.gif)
 
-## [Live Link](https://sheltered-earth-73542.herokuapp.com/login)
+## [Live Link](https://travel-bug-buddy.herokuapp.com/)
 
 **User**: test2 
 **Password**: test2
